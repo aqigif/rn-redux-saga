@@ -1,14 +1,28 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, FlatList, SafeAreaView, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  FlatList,
+  SafeAreaView,
+  View,
+  Image,
+  TextInput,
+  Button,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
 import {moderateScale} from 'react-native-size-matters';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {getMovie, actionGetListMovie} from './ActionHome';
+import {actionUpdateProfile, actionGetListMovie} from './ActionHome';
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [name, setName] = React.useState('');
+  const [value, setValue] = React.useState({
+    name: '',
+    job: 'zion resident',
+  });
 
   useEffect(() => {
     const filter = {
@@ -18,13 +32,59 @@ const Home = () => {
   }, []);
 
   const dataMovie = useSelector(state => state.Home);
+  const dataProfile = dataMovie?.moviesData?.data;
+
+  const doUpdate = async () => {
+    try {
+      await dispatch(actionUpdateProfile(value));
+      const filter = {
+        page: 3,
+      };
+      dispatch(actionGetListMovie(filter));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // optional chaining
+
+  useEffect(() => {
+    if (dataProfile) {
+      setValue({
+        ...value,
+        name: dataProfile?.first_name,
+      });
+      setName(dataProfile?.first_name);
+    }
+  }, [dataProfile]);
   // const submitMovie = () => {
   //   // dispatch(getMovie());
   // };
-
   return (
     <SafeAreaView>
-      <FlatList
+      <Image
+        source={{
+          uri: dataProfile?.avatar || '',
+        }}
+        style={{
+          height: 100,
+          width: 100,
+          margin: 10,
+        }}
+      />
+      <TextInput
+        value={value.name}
+        onChangeText={val =>
+          setValue({
+            ...value,
+            name: val,
+          })
+        }
+        style={{borderWidth: 1, margin: 10}}
+      />
+      <View style={{margin: 10}}>
+        <Button title="Save" onPress={() => doUpdate()} />
+      </View>
+      {/* <FlatList
         data={dataMovie.moviesData}
         keyExtractor={item => item.id}
         renderItem={({item}) => {
@@ -54,7 +114,7 @@ const Home = () => {
             </View>
           );
         }}
-      />
+      /> */}
     </SafeAreaView>
   );
 };

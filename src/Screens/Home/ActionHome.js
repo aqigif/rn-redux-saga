@@ -27,9 +27,15 @@ export const getListMovie = () => {
 };
 
 export const actionGetListMovie = filter => {
-  console.log('ACTION GET MOVIES', 'filter: { page: 3, sort:DESC}');
   return {
     type: 'GET_MOVIES_REQUESTED',
     filter,
+  };
+};
+
+export const actionUpdateProfile = data => {
+  return {
+    type: 'UPDATE_PROFILE_REQUESTED',
+    data,
   };
 };

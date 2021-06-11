@@ -30,6 +30,20 @@ export default (state = initialState, action) => {
         ...state,
         moviesData: action.data,
       };
+    case 'UPDATE_PROFILE_REQUESTED':
+      return {
+        ...state,
+      };
+    case 'UPDATE_PROFILE_SUCCEEDED':
+      return {
+        ...state,
+        dataProfile: action.dataUpdate,
+      };
+    case 'UPDATE_PROFILE_FAILED':
+      return {
+        ...state,
+        ...action,
+      };
     default:
       return state;
   }
